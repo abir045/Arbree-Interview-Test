@@ -32,10 +32,8 @@ async function getAllTasks() {
     throw err;
   }
 }
-//create API routes
 
-//get all routes
-
+// connection check
 pool.connect((err, client, release) => {
   if (err) {
     return console.error("Error acquiring client", err);
@@ -43,12 +41,12 @@ pool.connect((err, client, release) => {
   console.log("database connection successful");
   release();
 });
+//get all tasks
 
 app.get("api/tasks", async (req, res) => {
   try {
     const result = await getAllTasks();
-    // await pool.query("SELECT * FROM tasks");
-    // console.log(res.json(result.rows));
+
     return res.json(result);
   } catch (err) {
     console.log(err);
@@ -58,40 +56,64 @@ app.get("api/tasks", async (req, res) => {
 
 getAllTasks();
 
+async function getTaskById(id) {
+  try {
+    const result = await pool.query("SELECT * FROM tasks WHERE id = $1", [id]);
+    if (result.rows.length > 0) {
+      console.log("Task found:");
+      console.log(result.rows[0]);
+      return result.rows[0];
+    } else {
+      console.log("No task found with id:", id);
+      return null;
+    }
+  } catch (err) {
+    console.error("Error fetching task:", err);
+    throw err;
+  }
+}
+
+// GET a single task
+app.get("/api/tasks/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const task = await getTaskById(id);
+    if (task) {
+      res.json(task);
+    } else {
+      res.status(404).json({ error: "Task not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+getTaskById(1);
+
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });
 
-/**
- * // GET a single task
-app.get('/api/tasks/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// POST a new task
-app.post('/api/tasks', async (req, res) => {
-  const { title, description, status, due_date } = req.body;
+//POST a new task
+app.post("/api/tasks", async (req, res) => {
+  const { title, description, status, category_id, deadline } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO tasks (title, description, status, due_date) VALUES ($1, $2, $3, $4) RETURNING *',
-      [title, description, status, due_date]
+      "INSERT INTO tasks (title, description, status,category_id, deadline) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [title, description, status, category_id, deadline]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 });
+
+/**
+ * 
+ *
+ * 
 
 // PUT (update) a task
 app.put('/api/tasks/:id', async (req, res) => {
@@ -132,9 +154,7 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-// 4. Create a .env file in the root directory
-// DATABASE_URL=postgresql://username:password@localhost:5432/taskmanager
-// PORT=3000
+
  * 
  * 
  * 
