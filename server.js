@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const bodyparser = require("body-parser");
+// const bodyparser = require("body-parser");
 const { Pool } = require("pg");
 const { connectionString } = require("pg/lib/defaults");
 
@@ -91,10 +91,6 @@ app.get("/api/tasks/:id", async (req, res) => {
 
 getTaskById(3);
 
-app.listen(port, () => {
-  console.log(`server running on port ${port}`);
-});
-
 //POST a new task
 app.post("/api/tasks", async (req, res) => {
   const { title, description, status, category_id, deadline } = req.body;
@@ -129,22 +125,21 @@ app.put("/api/tasks/:id", async (req, res) => {
   }
 });
 
-/**
- * 
- *
- * 
 // DELETE a task
-app.delete('/api/tasks/:id', async (req, res) => {
+app.delete("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('DELETE FROM tasks WHERE id = $1 RETURNING *', [id]);
+    const result = await pool.query(
+      "DELETE FROM tasks WHERE id = $1 RETURNING *",
+      [id]
+    );
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Task not found' });
+      return res.status(404).json({ error: "Task not found" });
     }
-    res.json({ message: 'Task deleted successfully' });
+    res.json({ message: "Task deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -152,14 +147,3 @@ app.delete('/api/tasks/:id', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
