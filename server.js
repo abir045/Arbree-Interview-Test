@@ -89,7 +89,7 @@ app.get("/api/tasks/:id", async (req, res) => {
   }
 });
 
-getTaskById(1);
+getTaskById(3);
 
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
@@ -110,30 +110,29 @@ app.post("/api/tasks", async (req, res) => {
   }
 });
 
-/**
- * 
- *
- * 
-
 // PUT (update) a task
-app.put('/api/tasks/:id', async (req, res) => {
+app.put("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, description, status, due_date } = req.body;
+  const { title, description, status, category_id, deadline } = req.body;
   try {
     const result = await pool.query(
-      'UPDATE tasks SET title = $1, description = $2, status = $3, due_date = $4 WHERE id = $5 RETURNING *',
-      [title, description, status, due_date, id]
+      "UPDATE tasks SET title = $1, description = $2, status = $3, category_id = $4, deadline = $5  WHERE id = $6 RETURNING *",
+      [title, description, status, category_id, deadline, id]
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Task not found' });
+      return res.status(404).json({ error: "Task not found" });
     }
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
+/**
+ * 
+ *
+ * 
 // DELETE a task
 app.delete('/api/tasks/:id', async (req, res) => {
   const { id } = req.params;
