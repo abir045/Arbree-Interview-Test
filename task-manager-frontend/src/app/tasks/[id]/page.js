@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { getTaskById } from "@/services/api";
+import { useParams, useRouter } from "next/navigation";
+import { getTaskById, deleteTask } from "@/services/api";
+import Link from "next/link";
 
 export default function TaskDetail() {
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const params = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -25,6 +27,17 @@ export default function TaskDetail() {
     fetchTask();
   }, [params.id]);
 
+  const handleDelete = async () => {
+    try {
+      await deleteTask(params.id);
+      console.log("task deleted successfully");
+      router.push("/");
+    } catch (err) {
+      console.error("failed to delete task:", err);
+      throw err;
+    }
+  };
+
   if (loading)
     return <div className="text-center mt-8">Loading task details...</div>;
   if (error)
@@ -40,11 +53,29 @@ export default function TaskDetail() {
         <div className="mb-2">
           <span className="font-semibold">Status: {task.status}</span>
         </div>
+        <div className="mb-2">
+          <span className="font-semibold">Category: {task.category}</span>
+        </div>
         {task.deadline && (
           <div className="mb-2">
             <span className="font-semibold">Deadline: {task.deadline}</span>
           </div>
         )}
+        <div className="justify-end space-x-2 mt-4">
+          <Link
+            href={`/tasks/${params.id}/edit`}
+            className="px-4 py-2 bg-yellow-500 text-white rounded"
+          >
+            Edit
+          </Link>
+
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-400 text-white rounded"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

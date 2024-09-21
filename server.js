@@ -93,11 +93,11 @@ getTaskById(2);
 
 //POST a new task
 app.post("/api/tasks", async (req, res) => {
-  const { title, description, status, category_id, deadline } = req.body;
+  const { title, description, status, category, deadline } = req.body;
   try {
     const result = await pool.query(
-      "INSERT INTO tasks (title, description, status,category_id, deadline) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [title, description, status, category_id, deadline]
+      "INSERT INTO tasks (title, description, status,category, deadline) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [title, description, status, category, deadline]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -109,11 +109,11 @@ app.post("/api/tasks", async (req, res) => {
 // PUT (update) a task
 app.put("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, description, status, category_id, deadline } = req.body;
+  const { title, description, status, category, deadline } = req.body;
   try {
     const result = await pool.query(
-      "UPDATE tasks SET title = $1, description = $2, status = $3, category_id = $4, deadline = $5  WHERE id = $6 RETURNING *",
-      [title, description, status, category_id, deadline, id]
+      "UPDATE tasks SET title = $1, description = $2, status = $3, category = $4, deadline = $5  WHERE id = $6 RETURNING *",
+      [title, description, status, category, deadline, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Task not found" });
