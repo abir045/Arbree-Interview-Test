@@ -5,3 +5,4 @@ const api = axios.create({
 });
 
 export const getTasks = () => api.get("/api/tasks");
+export const getTaskById = (id) => api.get(`/api/tasks/${id}`);

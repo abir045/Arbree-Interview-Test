@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { getTasks } from "@/services/api";
 import axios from "axios";
+import Link from "next/link";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
@@ -12,9 +13,9 @@ export default function TaskList() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/tasks");
+        const response = await getTasks();
         setTasks(response.data);
-        console.log(response.data);
+
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch tasks");
@@ -36,7 +37,12 @@ export default function TaskList() {
         <ul className="space-y-2">
           {tasks.map((task) => (
             <li className="bg-gray-100 p-2 rounded" key={task.id}>
-              {task.title}
+              <Link
+                href={`/tasks/${task.id}`}
+                className="text-blue-600 hover:underline"
+              >
+                {task.title}
+              </Link>
             </li>
           ))}
         </ul>
