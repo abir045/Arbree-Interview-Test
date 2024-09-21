@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-// const bodyparser = require("body-parser");
+const bodyparser = require("body-parser");
 const { Pool } = require("pg");
 const { connectionString } = require("pg/lib/defaults");
 
@@ -43,7 +43,7 @@ pool.connect((err, client, release) => {
 });
 //get all tasks
 
-app.get("api/tasks", async (req, res) => {
+app.get("/api/tasks", async (req, res) => {
   try {
     const result = await getAllTasks();
 
@@ -89,7 +89,7 @@ app.get("/api/tasks/:id", async (req, res) => {
   }
 });
 
-getTaskById(3);
+getTaskById(2);
 
 //POST a new task
 app.post("/api/tasks", async (req, res) => {
