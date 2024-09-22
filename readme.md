@@ -15,7 +15,7 @@
 
 - RESTful API (Next.js + Node.js Backend)
 - Create a task
-  ![Alt text]("./images/add_new_task.png")
+  ![](./images/add_new_task.png)
 - Retrieve all tasks
 - Retrieve a specific task by ID
 - Update a task
@@ -25,7 +25,7 @@
 - Forms for creating and updating tasks.
 - Task categorization and completion features.
 
-# Issues
+# Issues on deploy
 
 - Deployment to free tier Render was not successful as Render requires payment info incase of using their postgres database service and fullstack hosting service
 
