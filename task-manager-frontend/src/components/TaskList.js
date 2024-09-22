@@ -74,7 +74,8 @@ export default function TaskList() {
                 href={`/tasks/${task.id}`}
                 className="text-blue-600 hover:underline"
               >
-                {task.title}
+                {task.title}{" "}
+                <span className="ml-2 text-gray-500">({task.category})</span>
               </Link>
             </li>
           ))}
